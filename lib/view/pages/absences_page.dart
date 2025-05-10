@@ -1,16 +1,15 @@
-
 import 'package:code_challenge/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class AbsencesScreen extends StatefulWidget {
-  const AbsencesScreen({super.key});
+class AbsencesPage extends StatefulWidget {
+  const AbsencesPage({super.key});
 
   @override
-  State<AbsencesScreen> createState() => _AbsencesScreenState();
+  State<AbsencesPage> createState() => _AbsencesPageState();
 }
 
-class _AbsencesScreenState extends State<AbsencesScreen> {
+class _AbsencesPageState extends State<AbsencesPage> {
   final int _pageSize = 10;
   List<Absence> _absences = [];
   List<Absence> _filteredAbsences = [];
