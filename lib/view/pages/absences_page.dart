@@ -79,100 +79,107 @@ class _AbsencesPageState extends State<AbsencesPage> {
 
   Widget _buildFilters() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 8),
+          Row(
             children: [
-              Row(
-                children: [
-                  const Text('Filters', style: TextStyle(fontSize: 18)),
-                  const Spacer(),
-                  SizedBox(
-                    height: 35,
-                    width: 70,
-                    child: TextButton(
-                      onPressed: _resetFilters,
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: const BorderSide(color: Colors.red),
-                        ),
-                      ),
-                      child: const Text('Reset',
-                          style: TextStyle(color: Colors.red)),
+              Expanded(
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _selectedType == 'All'
+                          ? Colors.black54
+                          : Colors.green,
                     ),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ],
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: DropdownButton<String>(
+                    value: _selectedType,
+                    isExpanded: true,
+                    underline: const SizedBox(),
+                    onChanged: (value) {
+                      setState(() => _selectedType = value!);
+                      _filterAbsences();
+                    },
+                    items: ['All', 'vacation', 'sickness']
+                        .map((type) =>
+                            DropdownMenuItem(value: type, child: Text(type)))
+                        .toList(),
+                  ),
+                ),
               ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 50,
-                      child: DropdownButtonFormField<String>(
-                        value: _selectedType,
-                        onChanged: (value) {
-                          setState(() => _selectedType = value!);
-                          _filterAbsences();
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Type',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                        ),
-                        items: ['All', 'vacation', 'sickness']
-                            .map((type) => DropdownMenuItem(
-                                value: type, child: Text(type)))
-                            .toList(),
+              const SizedBox(width: 12),
+              Expanded(
+                child: SizedBox(
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      final picked = await showDateRangePicker(
+                        context: context,
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime(2025),
+                        initialDateRange: _selectedDateRange,
+                        currentDate: DateTime.now(),
+                      );
+                      if (picked != null) {
+                        setState(() => _selectedDateRange = picked);
+                        _filterAbsences();
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.date_range,
+                      color: Colors.black54,
+                    ),
+                    label: Text(
+                      _selectedDateRange == null
+                          ? 'Date'
+                          : '${DateFormat('dd MMM').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM').format(_selectedDateRange!.end)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: _selectedDateRange == null
+                            ? Colors.black54
+                            : Colors.green,
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: SizedBox(
-                      height: 50,
-                      child: ElevatedButton.icon(
-                        onPressed: () async {
-                          final picked = await showDateRangePicker(
-                            context: context,
-                            firstDate: DateTime(2020),
-                            lastDate: DateTime(2025),
-                            initialDateRange: _selectedDateRange,
-                            currentDate: DateTime.now(),
-                          );
-                          if (picked != null) {
-                            setState(() => _selectedDateRange = picked);
-                            _filterAbsences();
-                          }
-                        },
-                        icon: const Icon(Icons.date_range),
-                        label: Text(
-                          _selectedDateRange == null
-                              ? 'Date'
-                              : '${DateFormat('dd MMM').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM').format(_selectedDateRange!.end)}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          alignment: Alignment.centerLeft,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                          color: _selectedDateRange == null
+                              ? Colors.black54
+                              : Colors.green,
                         ),
                       ),
+                      alignment: Alignment.centerLeft,
                     ),
                   ),
-                ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              SizedBox(
+                height: 50,
+                width: 70,
+                child: TextButton(
+                  onPressed: _resetFilters,
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: const BorderSide(color: Colors.red),
+                    ),
+                  ),
+                  child:
+                      const Text('Reset', style: TextStyle(color: Colors.red)),
+                ),
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
@@ -251,13 +258,13 @@ class _AbsencesPageState extends State<AbsencesPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Employee Absences'),
+        title: const Text('Absences Manager'),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
       ),
       body: Column(
         children: [
-          _buildFilters(),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Align(
@@ -269,6 +276,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
               ),
             ),
           ),
+          _buildFilters(),
           Expanded(
             child: ListView.builder(
               itemCount: pageItems.length,
