@@ -18,7 +18,7 @@ class AbsencesRemoteDataSource {
       int end = start + absencesRequestModel.pageSize;
       if (start >= absencesJson.length) {
         return AllAbsencesModel(
-          totalCount: 0,
+          totalCount: absencesJson.length,
           absences: [],
         );
       }
