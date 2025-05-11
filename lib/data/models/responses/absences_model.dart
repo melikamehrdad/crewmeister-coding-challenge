@@ -1,29 +1,3 @@
-class AbsencesResponse {
-  final String message;
-  final List<AbsenceModel> payload;
-
-  AbsencesResponse({
-    required this.message,
-    required this.payload,
-  });
-
-  factory AbsencesResponse.fromJson(Map<String, dynamic> json) {
-    return AbsencesResponse(
-      message: json['message'] as String,
-      payload: (json['payload'] as List<dynamic>)
-          .map((item) => AbsenceModel.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'message': message,
-      'payload': payload.map((absence) => absence.toJson()).toList(),
-    };
-  }
-}
-
 class AbsenceModel {
   final int? admitterId;
   final String admitterNote;

@@ -1,14 +1,14 @@
-class MembersResponse {
+class MembersResponseModel {
   final String message;
   final List<MemberModel> payload;
 
-  MembersResponse({
+  MembersResponseModel({
     required this.message,
     required this.payload,
   });
 
-  factory MembersResponse.fromJson(Map<String, dynamic> json) {
-    return MembersResponse(
+  factory MembersResponseModel.fromJson(Map<String, dynamic> json) {
+    return MembersResponseModel(
       message: json['message'],
       payload: List<MemberModel>.from(json['payload'].map((x) => MemberModel.fromJson(x))),
     );
