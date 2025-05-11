@@ -1,6 +1,7 @@
-import 'package:code_challenge/domain/entities/entities.dart';
+import 'package:code_challenge/bloc/absences_bloc.dart';
+import 'package:code_challenge/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AbsencesPage extends StatefulWidget {
   const AbsencesPage({super.key});
@@ -10,284 +11,83 @@ class AbsencesPage extends StatefulWidget {
 }
 
 class _AbsencesPageState extends State<AbsencesPage> {
-  final int _pageSize = 10;
-  List<Absence> _absences = [];
-  List<Absence> _filteredAbsences = [];
-  int _currentPage = 0;
-  String _selectedType = 'All';
-  DateTimeRange? _selectedDateRange;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _loadFakeData();
-  }
+    BlocProvider.of<AbsencesBloc>(context).add(AbsencesFetched());
 
-  void _loadFakeData() {
-    _absences = List.generate(
-        25,
-        (index) => Absence(
-              userId: index,
-              type: index % 2 == 0 ? "vacation" : "sickness",
-              startDate:
-                  "2024-05-${((index % 28) + 1).toString().padLeft(2, '0')}",
-              endDate:
-                  "2024-05-${((index % 28) + 2).toString().padLeft(2, '0')}",
-              memberNote: index % 3 == 0 ? "Needs rest" : "",
-              admitterNote: index % 5 == 0 ? "Approved" : "",
-              status: ["Confirmed", "Rejected", "Requested"][index % 3],
-              createdAt: "2024-05-${(index % 28) + 1}",
-              crewId: index + 1,
-              id: index,
-            ));
-    _filteredAbsences = _absences;
-  }
-
-  void _filterAbsences() {
-    setState(() {
-      _filteredAbsences = _absences.where((absence) {
-        final matchType =
-            _selectedType == 'All' || absence.type == _selectedType;
-        final matchDate = _selectedDateRange == null ||
-            (DateTime.parse(absence.startDate)
-                    .isAfter(_selectedDateRange!.start) &&
-                DateTime.parse(absence.endDate)
-                    .isBefore(_selectedDateRange!.end));
-        return matchType && matchDate;
-      }).toList();
-    });
-  }
-
-  void _resetFilters() {
-    setState(() {
-      _selectedType = 'All';
-      _selectedDateRange = null;
-    });
-    _filterAbsences();
-  }
-
-  Color _getStatusColor(String status) {
-    switch (status) {
-      case 'Confirmed':
-        return Colors.green.shade200;
-      case 'Rejected':
-        return Colors.red.shade200;
-      default:
-        return Colors.orange.shade200;
-    }
-  }
-
-  Widget _buildFilters() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: _selectedType == 'All'
-                          ? Colors.black54
-                          : Colors.green,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: DropdownButton<String>(
-                    value: _selectedType,
-                    isExpanded: true,
-                    underline: const SizedBox(),
-                    onChanged: (value) {
-                      setState(() => _selectedType = value!);
-                      _filterAbsences();
-                    },
-                    items: ['All', 'vacation', 'sickness']
-                        .map((type) =>
-                            DropdownMenuItem(value: type, child: Text(type)))
-                        .toList(),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: SizedBox(
-                  height: 50,
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      final picked = await showDateRangePicker(
-                        context: context,
-                        firstDate: DateTime(2020),
-                        lastDate: DateTime(2025),
-                        initialDateRange: _selectedDateRange,
-                        currentDate: DateTime.now(),
-                      );
-                      if (picked != null) {
-                        setState(() => _selectedDateRange = picked);
-                        _filterAbsences();
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.date_range,
-                      color: Colors.black54,
-                    ),
-                    label: Text(
-                      _selectedDateRange == null
-                          ? 'Date'
-                          : '${DateFormat('dd MMM').format(_selectedDateRange!.start)} - ${DateFormat('dd MMM').format(_selectedDateRange!.end)}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: _selectedDateRange == null
-                            ? Colors.black54
-                            : Colors.green,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(
-                          color: _selectedDateRange == null
-                              ? Colors.black54
-                              : Colors.green,
-                        ),
-                      ),
-                      alignment: Alignment.centerLeft,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              SizedBox(
-                height: 50,
-                width: 70,
-                child: TextButton(
-                  onPressed: _resetFilters,
-                  style: TextButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: const BorderSide(color: Colors.red),
-                    ),
-                  ),
-                  child:
-                      const Text('Reset', style: TextStyle(color: Colors.red)),
-                ),
-              ),
-            ],
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        BlocProvider.of<AbsencesBloc>(context).add(
+          AbsencesLoadMore(
+            pageNumber:
+                BlocProvider.of<AbsencesBloc>(context).state.correctPageNumber +
+                    1,
           ),
-        ],
-      ),
-    );
+        );
+      }
+    });
   }
 
-  Widget _buildAbsenceCard(Absence absence) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Member #${absence.userId}",
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-                Chip(
-                  label: Text(absence.status),
-                  backgroundColor: _getStatusColor(absence.status),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text("Type: ${absence.type}", style: const TextStyle(fontSize: 14)),
-            Text("Period: ${absence.startDate} - ${absence.endDate}",
-                style: const TextStyle(fontSize: 14)),
-            if (absence.memberNote.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text("Member note: ${absence.memberNote}",
-                    style: const TextStyle(
-                        fontSize: 13, fontStyle: FontStyle.italic)),
-              ),
-            if (absence.admitterNote.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text("Admitter note: ${absence.admitterNote}",
-                    style: TextStyle(fontSize: 13, color: Colors.grey[700])),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPaginationControls() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        ElevatedButton(
-          onPressed:
-              _currentPage > 0 ? () => setState(() => _currentPage--) : null,
-          child: const Text('Previous'),
-        ),
-        Text('Page ${_currentPage + 1}'),
-        ElevatedButton(
-          onPressed: (_currentPage + 1) * _pageSize < _filteredAbsences.length
-              ? () => setState(() => _currentPage++)
-              : null,
-          child: const Text('Next'),
-        ),
-      ],
-    );
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final start = _currentPage * _pageSize;
-    final end = (_currentPage + 1) * _pageSize;
-    final pageItems = _filteredAbsences.sublist(
-        start, end > _filteredAbsences.length ? _filteredAbsences.length : end);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Absences Manager'),
-        centerTitle: true,
-        backgroundColor: Colors.blueAccent,
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Total number of absences is ${_filteredAbsences.length}',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+    return BlocBuilder<AbsencesBloc, AbsencesState>(
+      builder: (context, state) {
+        if (state.status == AbsencesStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state.status == AbsencesStatus.failure) {
+          return const Center(child: Text('Failed to load data.'));
+        } else if (state.status == AbsencesStatus.success) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Absences Manager'),
+              centerTitle: true,
+              backgroundColor: Colors.blueAccent,
             ),
-          ),
-          _buildFilters(),
-          Expanded(
-            child: ListView.builder(
-              itemCount: pageItems.length,
-              itemBuilder: (context, index) =>
-                  _buildAbsenceCard(pageItems[index]),
+            body: Column(
+              children: [
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Total number of absences is ${state.totalAbsencesCount}',
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                FiltersWidget(),
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount: state.absences.length,
+                    itemBuilder: (context, index) =>
+                        AbsenceCardWidget(absence: state.absences[index]),
+                  ),
+                ),
+                if (state.hasReachedMax)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+              ],
             ),
-          ),
-          _buildPaginationControls(),
-          const SizedBox(height: 10),
-        ],
-      ),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }
