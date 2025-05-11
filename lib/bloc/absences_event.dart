@@ -10,19 +10,20 @@ abstract class AbsencesEvent extends Equatable {
 class AbsencesFetched extends AbsencesEvent {}
 
 class AbsencesLoadMore extends AbsencesEvent {
-  final int startIndex;
+  final int pageNumber;
+  final String? filterType;
+  final DateTimeRange? dateRange;
 
-  const AbsencesLoadMore(this.startIndex);
-
-  @override
-  List<Object> get props => [startIndex];
+  const AbsencesLoadMore(
+      {required this.pageNumber, this.filterType, this.dateRange});
 }
 
 class AbsencesFiltered extends AbsencesEvent {
-  final String filter;
+  final String filterType;
+  final DateTimeRange? dateRange;
 
-  const AbsencesFiltered(this.filter);
-
-  @override
-  List<Object> get props => [filter];
+  const AbsencesFiltered({
+    required this.filterType,
+    this.dateRange,
+  });
 }

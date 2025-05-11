@@ -28,4 +28,4 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/json_files/
+    - assets/json/
