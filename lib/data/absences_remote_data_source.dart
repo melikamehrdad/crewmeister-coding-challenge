@@ -1,18 +1,16 @@
 import 'dart:convert';
+import 'package:code_challenge/utils.dart/constants.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import 'package:code_challenge/data/models/requests/requests.dart';
 import 'package:code_challenge/data/models/responses/responses.dart';
 
-const String absencesJsonPath = 'assets/json/absences.json';
-const String membersJsonPath = 'assets/json/members.json';
-
 class AbsencesRemoteDataSource {
   Future<AllAbsencesModel> getAbsences(
       AbsencesRequestModel absencesRequestModel) async {
     try {
-      final absencesJson = await _loadJson(absencesJsonPath);
-      final membersJson = await _loadJson(membersJsonPath);
+      final absencesJson = await _loadJson(Constants.absencesJsonPath);
+      final membersJson = await _loadJson(Constants.membersJsonPath);
 
       final absencesList = _parseAbsences(absencesJson);
       final membersList = _parseMembers(membersJson);
