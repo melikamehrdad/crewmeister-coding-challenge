@@ -104,6 +104,9 @@ lib/
 ├── utils/
 │   └── constants.dart          # Any global constants (URLs, colors, etc.)
 └── main.dart                   # Entry point of the app
+test/
+├── bloc_test.dart              # Contains logic tests
+└── widget_test.dart            # Contains view tests
 ```
 
 ---
@@ -137,11 +140,12 @@ If you would like to contribute to this project, please follow these steps:
 ---
 
 ## **Demo Videos**
-You can find the demo videos of the app for both Android and iOS below:
+You can find the demo videos of the app for both Android, iOS and web below:
 
 https://github.com/user-attachments/assets/48d0f0b0-7ce5-4610-acdb-7ec4a72bc14c
 
 https://github.com/user-attachments/assets/09ad5502-5081-45ea-a319-819392207ee6
 
+https://github.com/user-attachments/assets/31cd6f08-696e-4025-9f0e-4470395b4252
 
 
