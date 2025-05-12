@@ -12,6 +12,8 @@ class Absence {
   final String type;
   final int userId;
   final String status;
+  final String memberName;
+  final String memberImage;
 
   Absence({
     this.admitterId,
@@ -27,6 +29,8 @@ class Absence {
     required this.type,
     required this.userId,
     required this.status,
+    required this.memberName,
+    required this.memberImage,
   });
 
   factory Absence.fromEntity(Map<String, dynamic> json) {
@@ -53,6 +57,8 @@ class Absence {
       type: json['type'] as String,
       userId: json['userId'] as int,
       status: status,
+      memberName: json['memberName'] as String,
+      memberImage: json['memberImage'] as String,
     );
   }
 
@@ -70,6 +76,9 @@ class Absence {
       'startDate': startDate,
       'type': type,
       'userId': userId,
+      'status': status,
+      'memberName': memberName,
+      'memberImage': memberImage,
     };
   }
 }

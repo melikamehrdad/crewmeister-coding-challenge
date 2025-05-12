@@ -26,6 +26,8 @@ void main() {
       createdAt: '2024-05-01',
       crewId: 1,
       id: 1,
+      memberName: 'John Doe',
+      memberImage: 'http://example.com/image1.jpg',
     ),
     Absence(
       userId: 2,
@@ -38,6 +40,8 @@ void main() {
       createdAt: '2024-05-06',
       crewId: 2,
       id: 2,
+      memberName: 'Jane Smith',
+      memberImage: 'http://example.com/image2.jpg',
     ),
     Absence(
       userId: 3,
@@ -50,6 +54,8 @@ void main() {
       createdAt: '2024-05-10',
       crewId: 3,
       id: 3,
+      memberName: 'Alice Johnson',
+      memberImage: 'http://example.com/image3.jpg',
     ),
   ];
 
@@ -103,7 +109,7 @@ void main() {
       expect(
           find.byType(AbsenceCardWidget), findsNWidgets(mockAbsences.length));
       for (var absence in mockAbsences) {
-        expect(find.text('Member #${absence.userId}'), findsOneWidget);
+        expect(find.text(absence.memberName), findsOneWidget);
         expect(find.text('Type: ${absence.type}'), findsWidgets);
         expect(find.text('Period: ${absence.startDate} - ${absence.endDate}'),
             findsOneWidget);

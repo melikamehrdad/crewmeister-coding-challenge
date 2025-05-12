@@ -1,3 +1,5 @@
+import 'package:code_challenge/data/models/responses/responses.dart';
+
 class AbsenceModel {
   final int? admitterId;
   final String admitterNote;
@@ -11,6 +13,8 @@ class AbsenceModel {
   final String startDate;
   final String type;
   final int userId;
+  String? memberName;
+  String? memberImage;
 
   AbsenceModel({
     this.admitterId,
@@ -25,6 +29,8 @@ class AbsenceModel {
     required this.startDate,
     required this.type,
     required this.userId,
+    this.memberName,
+    this.memberImage,
   });
 
   factory AbsenceModel.fromJson(Map<String, dynamic> json) {
@@ -41,6 +47,8 @@ class AbsenceModel {
       startDate: json['startDate'] as String,
       type: json['type'] as String,
       userId: json['userId'] as int,
+      memberName: json['memberName'] as String?,
+      memberImage: json['memberImage'] as String?,
     );
   }
 
@@ -58,6 +66,15 @@ class AbsenceModel {
       'startDate': startDate,
       'type': type,
       'userId': userId,
+      'memberName': memberName ?? 'Unknown',
+      'memberImage': memberImage ?? 'Unknown',
     };
+  }
+
+  void assignMemberInfo(MemberModel member) {
+    if (userId == member.userId) {
+      memberName = member.name;
+      memberImage = member.image;
+    }
   }
 }

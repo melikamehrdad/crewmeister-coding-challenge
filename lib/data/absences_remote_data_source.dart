@@ -4,37 +4,70 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:code_challenge/data/models/requests/requests.dart';
 import 'package:code_challenge/data/models/responses/responses.dart';
 
-final String absencesJsonPath = 'assets/json/absences.json';
+const String absencesJsonPath = 'assets/json/absences.json';
+const String membersJsonPath = 'assets/json/members.json';
 
 class AbsencesRemoteDataSource {
   Future<AllAbsencesModel> getAbsences(
       AbsencesRequestModel absencesRequestModel) async {
     try {
-      final String content = await rootBundle.loadString(absencesJsonPath);
-      final Map<String, dynamic> json = jsonDecode(content);
-      final absencesJson = json['payload'] as List;
-      int start =
-          (absencesRequestModel.pageNumber - 1) * absencesRequestModel.pageSize;
-      int end = start + absencesRequestModel.pageSize;
-      if (start >= absencesJson.length) {
-        return AllAbsencesModel(
-          totalCount: absencesJson.length,
-          absences: [],
-        );
-      }
-      end = end > absencesJson.length ? absencesJson.length : end;
-      List<AbsenceModel> absencesPaginatedList = absencesJson
-          .sublist(start, end)
-          .map((e) => AbsenceModel.fromJson(e))
-          .toList();
-      final AllAbsencesModel allAbsencesModel = AllAbsencesModel(
-        totalCount: absencesJson.length,
-        absences: absencesPaginatedList,
+      final absencesJson = await _loadJson(absencesJsonPath);
+      final membersJson = await _loadJson(membersJsonPath);
+
+      final absencesList = _parseAbsences(absencesJson);
+      final membersList = _parseMembers(membersJson);
+
+      final paginatedAbsences = _paginateAbsences(
+        absencesList,
+        absencesRequestModel.pageNumber,
+        absencesRequestModel.pageSize,
       );
 
-      return allAbsencesModel;
+      _assignMemberInfoToAbsences(paginatedAbsences, membersList);
+
+      return AllAbsencesModel(
+        totalCount: absencesList.length,
+        absences: paginatedAbsences,
+      );
     } catch (e) {
       throw Exception('Error loading absences: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> _loadJson(String path) async {
+    final content = await rootBundle.loadString(path);
+    return jsonDecode(content) as Map<String, dynamic>;
+  }
+
+  List<AbsenceModel> _parseAbsences(Map<String, dynamic> json) {
+    final absencesJson = json['payload'] as List;
+    return absencesJson.map((e) => AbsenceModel.fromJson(e)).toList();
+  }
+
+  List<MemberModel> _parseMembers(Map<String, dynamic> json) {
+    final membersJson = json['payload'] as List;
+    return membersJson.map((e) => MemberModel.fromJson(e)).toList();
+  }
+
+  List<AbsenceModel> _paginateAbsences(
+      List<AbsenceModel> absences, int pageNumber, int pageSize) {
+    final start = (pageNumber - 1) * pageSize;
+    final end = (start + pageSize).clamp(0, absences.length);
+
+    if (start >= absences.length) {
+      return [];
+    }
+
+    return absences.sublist(start, end);
+  }
+
+  void _assignMemberInfoToAbsences(
+      List<AbsenceModel> absences, List<MemberModel> members) {
+    for (var absence in absences) {
+      final member = members.firstWhere(
+        (member) => member.userId == absence.userId,
+      );
+      absence.assignMemberInfo(member);
     }
   }
 }
