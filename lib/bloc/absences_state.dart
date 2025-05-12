@@ -9,6 +9,8 @@ class AbsencesState extends Equatable {
   final List<Absence> absences;
   final bool hasReachedMax;
   final String errorMessage;
+  final String selectedType;
+  final DateTimeRange? selectedDateRange;
 
   const AbsencesState({
     this.correctPageNumber = 1,
@@ -17,6 +19,8 @@ class AbsencesState extends Equatable {
     this.absences = const [],
     this.hasReachedMax = false,
     this.errorMessage = '',
+    this.selectedType = 'All',
+    this.selectedDateRange,
   });
 
   AbsencesState copyWith({
@@ -26,6 +30,8 @@ class AbsencesState extends Equatable {
     List<Absence>? absences,
     bool? hasReachedMax,
     String? errorMessage,
+    String? selectedType,
+    DateTimeRange? selectedDateRange,
   }) {
     return AbsencesState(
       correctPageNumber: correctPageNumber ?? this.correctPageNumber,
@@ -34,16 +40,20 @@ class AbsencesState extends Equatable {
       absences: absences ?? this.absences,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       errorMessage: errorMessage ?? this.errorMessage,
+      selectedType: selectedType ?? this.selectedType,
+      selectedDateRange: selectedDateRange,
     );
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         correctPageNumber,
         status,
         absences,
         totalAbsencesCount,
         hasReachedMax,
-        errorMessage
+        errorMessage,
+        selectedType,
+        selectedDateRange,
       ];
 }

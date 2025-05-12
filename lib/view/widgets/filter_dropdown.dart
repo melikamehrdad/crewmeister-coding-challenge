@@ -20,8 +20,8 @@ class FilterDropdown extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(8),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: DropdownButton<String>(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         value: selectedType,
         isExpanded: true,
         icon: Icon(
@@ -29,6 +29,7 @@ class FilterDropdown extends StatelessWidget {
           color: selectedType != 'All' ? Colors.green : Colors.black54,
         ),
         underline: const SizedBox(),
+        focusColor: Colors.transparent,
         onChanged: (value) => onChanged(value!),
         items: ['All', 'vacation', 'sickness']
             .map((type) => DropdownMenuItem(

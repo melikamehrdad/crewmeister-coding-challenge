@@ -52,6 +52,8 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
           absences: currentAbsences + filteredAbsences,
           totalAbsencesCount: response.totalCount,
           hasReachedMax: false,
+          selectedType: event.filterType ?? state.selectedType,
+          selectedDateRange: event.dateRange ?? state.selectedDateRange,
         ));
       },
     );
@@ -76,6 +78,8 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
           status: AbsencesStatus.success,
           absences: filteredAbsences,
           totalAbsencesCount: response.totalCount,
+          selectedType: event.filterType,
+          selectedDateRange: event.dateRange ?? state.selectedDateRange,
         ));
       },
     );
