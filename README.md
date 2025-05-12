@@ -63,6 +63,21 @@ This project follows the **Clean Architecture** principles, ensuring a separatio
 
 ---
 
+## **Flutter Packages and Dependencies Used**
+
+This project uses the following Flutter and dependencies packages:
+
+- **cupertino_icons**: iOS-style icons.
+- **bloc**: State management using the BLoC pattern.
+- **flutter_bloc**: Integration of BLoC with Flutter widgets.
+- **equatable**: For value comparison and immutability of states.
+- **bloc_test**: For testing BLoC events and states.
+- **intl**: For date and locale-based formatting.
+- **mocktail**: For mocking dependencies in tests.
+- **flutter_lints**: Provides recommended lints for consistent code style.
+
+---
+
 ## **Directory Structure**
 Here is a brief overview of the directory structure:
 
@@ -118,3 +133,15 @@ If you would like to contribute to this project, please follow these steps:
 3. Commit your changes (`git commit -am 'Add new feature'`).
 4. Push to the branch (`git push origin feature/your-feature`).
 5. Create a new Pull Request.
+
+---
+
+## **Demo Videos**
+You can find the demo videos of the app for both Android and iOS below:
+
+https://github.com/user-attachments/assets/48d0f0b0-7ce5-4610-acdb-7ec4a72bc14c
+
+https://github.com/user-attachments/assets/09ad5502-5081-45ea-a319-819392207ee6
+
+
+
