@@ -40,8 +40,8 @@ This project follows the **Clean Architecture** principles, ensuring a separatio
 ## **Setup**
 
 ### **Requirements**
-- Flutter SDK >= 2.0
-- Dart SDK >= 2.12
+- Flutter SDK >= 3.27.2
+- Dart SDK >= 3.6.1
 - IDE (Android Studio, VS Code, or any other preferred IDE)
 
 ### **Installation**
