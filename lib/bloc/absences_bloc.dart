@@ -108,7 +108,10 @@ List<Absence> applyFilters(List<Absence> absences, String filterType,
     final matchType = filterType == 'All' || absence.type == filterType;
     final matchDate = selectedDateRange == null ||
         (DateTime.parse(absence.startDate).isAfter(selectedDateRange.start) &&
-            DateTime.parse(absence.endDate).isBefore(selectedDateRange.end));
+                DateTime.parse(absence.endDate)
+                    .isBefore(selectedDateRange.end) ||
+            DateTime.parse(absence.startDate) == selectedDateRange.start ||
+            DateTime.parse(absence.endDate) == selectedDateRange.end);
     return matchType && matchDate;
   }).toList();
 }
