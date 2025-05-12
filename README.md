@@ -49,7 +49,6 @@ This project follows the **Clean Architecture** principles, ensuring a separatio
 1. Clone this repository:
     ```bash
     git clone https://github.com/melikamehrdad/crewmeister-coding-challenge.git
-    cd crewmeister-coding-challenge
     ```
 
 2. Install dependencies:
