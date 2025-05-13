@@ -68,9 +68,11 @@ This project follows the **Clean Architecture** principles, ensuring a separatio
 This project uses the following Flutter and dependencies packages:
 
 - **cupertino_icons**: iOS-style icons.
+- **path_provider**: Get app directory to save and get data from storage.
 - **bloc**: State management using the BLoC pattern.
 - **flutter_bloc**: Integration of BLoC with Flutter widgets.
 - **equatable**: For value comparison and immutability of states.
+- **file_saver**: Save files in any devices.
 - **bloc_test**: For testing BLoC events and states.
 - **intl**: For date and locale-based formatting.
 - **mocktail**: For mocking dependencies in tests.
@@ -142,10 +144,8 @@ If you would like to contribute to this project, please follow these steps:
 ## **Demo Videos**
 You can find the demo videos of the app for both Android, iOS and web below:
 
-https://github.com/user-attachments/assets/48d0f0b0-7ce5-4610-acdb-7ec4a72bc14c
+[android.webm](https://github.com/user-attachments/assets/db091c35-7151-41e9-8044-63395c368431)
 
-https://github.com/user-attachments/assets/09ad5502-5081-45ea-a319-819392207ee6
+https://github.com/user-attachments/assets/b6d4a927-f1b6-45dc-9118-4de38d91c790
 
-https://github.com/user-attachments/assets/31cd6f08-696e-4025-9f0e-4470395b4252
-
-
+https://github.com/user-attachments/assets/65cc09d2-f588-47f2-819b-b1d3ed8d1181
