@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
-class FilterDropdown extends StatelessWidget {
+class DropdownWithBorder extends StatelessWidget {
+  final List<String> types;
   final String selectedType;
   final ValueChanged<String> onChanged;
 
-  const FilterDropdown({
+  const DropdownWithBorder({
+    super.key,
     required this.selectedType,
     required this.onChanged,
-    super.key,
+    this.types = const ['All' , 'Vacation', 'Sickness'],
   });
 
   @override
@@ -16,7 +18,7 @@ class FilterDropdown extends StatelessWidget {
       height: 50,
       decoration: BoxDecoration(
         border: Border.all(
-          color: selectedType == 'All' ? Colors.black54 : Colors.green,
+          color: selectedType == types.first ? Colors.black54 : Colors.green,
         ),
         borderRadius: BorderRadius.circular(8),
       ),
@@ -26,18 +28,18 @@ class FilterDropdown extends StatelessWidget {
         isExpanded: true,
         icon: Icon(
           Icons.arrow_drop_down,
-          color: selectedType != 'All' ? Colors.green : Colors.black54,
+          color: selectedType != types.first ? Colors.green : Colors.black54,
         ),
         underline: const SizedBox(),
         focusColor: Colors.transparent,
         onChanged: (value) => onChanged(value!),
-        items: ['All', 'vacation', 'sickness']
+        items: types
             .map((type) => DropdownMenuItem(
                   value: type,
                   child: Text(
                     type,
                     style: TextStyle(
-                      color: selectedType != 'All' && type == selectedType
+                      color: selectedType != types.first && type == selectedType
                           ? Colors.green
                           : Colors.black54,
                     ),

@@ -1,7 +1,7 @@
 import 'package:code_challenge/bloc/absences_bloc.dart';
 import 'package:code_challenge/view/widgets/date_range_picker_button.dart';
-import 'package:code_challenge/view/widgets/filter_dropdown.dart';
-import 'package:code_challenge/view/widgets/reset_button.dart';
+import 'package:code_challenge/view/widgets/dropdown_with_border.dart';
+import 'package:code_challenge/view/widgets/text_button_with_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,7 +32,12 @@ class FiltersWidget extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: FilterDropdown(
+                    child: DropdownWithBorder(
+                      types: const [
+                        'All',
+                        'vacation',
+                        'sickness',
+                      ],
                       selectedType: selectedType,
                       onChanged: (value) {
                         _filterAbsences(context, value, selectedDateRange);
@@ -49,10 +54,16 @@ class FiltersWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  ResetButton(
-                    onPressed: () {
-                      _filterAbsences(context, 'All', null);
-                    },
+                  SizedBox(
+                    height: 50,
+                    width: 70,
+                    child: TextButtonWithBorder(
+                      title: 'Reset',
+                      widgetColor: Colors.red,
+                      onPressed: () {
+                        _filterAbsences(context, 'All', null);
+                      },
+                    ),
                   ),
                 ],
               ),
