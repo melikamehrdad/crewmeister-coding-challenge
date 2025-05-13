@@ -4,13 +4,13 @@ class AbsencesRequest {
 
   AbsencesRequest({
     required this.pageNumber,
-    required this.pageSize,
+    required this.pageSize
   });
 
   Map<String, dynamic> toEntity() {
     return {
       'pageNumber': pageNumber,
-      'pageSize': pageSize,
+      'pageSize': pageSize
     };
   }
 

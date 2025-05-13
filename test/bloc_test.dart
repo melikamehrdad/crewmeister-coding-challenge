@@ -73,16 +73,17 @@ void main() {
       'emits [loading, success] when data is fetched successfully',
       build: () {
         when(() => mockAbsencesRepository.getAbsences(any()))
-            .thenAnswer((_) async => AllAbsences(absences: [], totalCount: 0));
+            .thenAnswer((_) async => AllAbsences(
+                  absences: [],
+                  totalCount: 0,
+                ));
         return absencesBloc;
       },
       act: (bloc) => bloc.add(AbsencesFetched()),
       expect: () => [
         const AbsencesState(status: AbsencesStatus.loading),
         const AbsencesState(
-            status: AbsencesStatus.success,
-            absences: [],
-            totalAbsencesCount: 0),
+            status: AbsencesStatus.success, totalAbsencesCount: 0),
       ],
       verify: (_) {
         verify(() => mockAbsencesRepository.getAbsences(any())).called(1);
@@ -113,7 +114,7 @@ void main() {
       build: () {
         when(() => mockAbsencesRepository.getAbsences(any()))
             .thenAnswer((_) async => AllAbsences(
-                  absences: [...mockAbsences],
+                  absences: mockAbsences + mockAbsences,
                   totalCount: 3,
                 ));
         return absencesBloc;
@@ -184,6 +185,7 @@ void main() {
             mockAbsences[0],
             mockAbsences[2],
           ],
+          selectedType: 'vacation',
           totalAbsencesCount: 3,
         ),
       ],
@@ -196,7 +198,7 @@ void main() {
       'emits [failure] when error occurs while filtering',
       build: () {
         when(() => mockAbsencesRepository.getAbsences(any()))
-            .thenThrow(Exception('Failed to load filtered data'));
+            .thenThrow(Exception('Error applying filters.'));
         return absencesBloc;
       },
       act: (bloc) =>
@@ -206,6 +208,25 @@ void main() {
             status: AbsencesStatus.failure,
             errorMessage: 'Error applying filters.'),
       ],
+    );
+
+    blocTest<AbsencesBloc, AbsencesState>(
+      'emits [loading, success] when export data file is created successfully',
+      build: () {
+        when(() => mockAbsencesRepository
+                .createExportDataFile(any()))
+            .thenAnswer((_) async => Future.value());
+        return absencesBloc;
+      },
+      act: (bloc) => bloc.add(AbsencesExportDataFileCreated()),
+      expect: () => [
+        const AbsencesState(status: AbsencesStatus.loading),
+        const AbsencesState(status: AbsencesStatus.fileExported, errorMessage: ''),
+      ],
+      verify: (_) {
+        verify(() => mockAbsencesRepository
+            .createExportDataFile(any())).called(1);
+      },
     );
   });
 }

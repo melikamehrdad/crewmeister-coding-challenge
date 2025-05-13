@@ -27,3 +27,5 @@ class AbsencesFiltered extends AbsencesEvent {
     this.dateRange,
   });
 }
+
+class AbsencesExportDataFileCreated extends AbsencesEvent {}

@@ -1,4 +1,5 @@
 import 'package:code_challenge/bloc/absences_bloc.dart';
+import 'package:code_challenge/data/absences_local_data_source.dart';
 import 'package:code_challenge/data/absences_remote_data_source.dart';
 import 'package:code_challenge/data/absences_repository_impl.dart';
 import 'package:code_challenge/view/view.dart';
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final absencesRepository = AbsencesRepositoryImpl(
     remoteDataSource: AbsencesRemoteDataSource(),
+    localDataSource: AbsencesLocalDataSource(),
   );
 
     return BlocProvider<AbsencesBloc>(

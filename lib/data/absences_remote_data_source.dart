@@ -15,17 +15,11 @@ class AbsencesRemoteDataSource {
       final absencesList = _parseAbsences(absencesJson);
       final membersList = _parseMembers(membersJson);
 
-      final paginatedAbsences = _paginateAbsences(
-        absencesList,
-        absencesRequestModel.pageNumber,
-        absencesRequestModel.pageSize,
-      );
-
-      _assignMemberInfoToAbsences(paginatedAbsences, membersList);
+      _assignMemberInfoToAbsences(absencesList, membersList);
 
       return AllAbsencesModel(
         totalCount: absencesList.length,
-        absences: paginatedAbsences,
+        absences: absencesList,
       );
     } catch (e) {
       throw Exception('Error loading absences: $e');
@@ -45,18 +39,6 @@ class AbsencesRemoteDataSource {
   List<MemberModel> _parseMembers(Map<String, dynamic> json) {
     final membersJson = json['payload'] as List;
     return membersJson.map((e) => MemberModel.fromJson(e)).toList();
-  }
-
-  List<AbsenceModel> _paginateAbsences(
-      List<AbsenceModel> absences, int pageNumber, int pageSize) {
-    final start = (pageNumber - 1) * pageSize;
-    final end = (start + pageSize).clamp(0, absences.length);
-
-    if (start >= absences.length) {
-      return [];
-    }
-
-    return absences.sublist(start, end);
   }
 
   void _assignMemberInfoToAbsences(

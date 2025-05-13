@@ -1,5 +1,8 @@
 import 'package:code_challenge/bloc/absences_bloc.dart';
-import 'package:code_challenge/view/widgets/widgets.dart';
+import 'package:code_challenge/view/widgets/absence_card_widget.dart';
+import 'package:code_challenge/view/widgets/filters_widget.dart';
+import 'package:code_challenge/view/widgets/loading_widget.dart';
+import 'package:code_challenge/view/widgets/text_button_with_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,54 +43,77 @@ class _AbsencesPageState extends State<AbsencesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AbsencesBloc, AbsencesState>(
-      builder: (context, state) {
-        if (state.status == AbsencesStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state.status == AbsencesStatus.failure) {
-          return const Center(child: Text('Failed to load data.'));
-        } else if (state.status == AbsencesStatus.success) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Absences Manager'),
-              centerTitle: true,
-              backgroundColor: Colors.blueAccent,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Absences Manager'),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: TextButtonWithBorder(
+              title: 'Export',
+              widgetColor: Colors.white,
+              onPressed: () {
+                BlocProvider.of<AbsencesBloc>(context)
+                    .add(AbsencesExportDataFileCreated());
+              },
             ),
-            body: Column(
-              children: [
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Total number of absences is ${state.totalAbsencesCount}',
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+      body: BlocListener<AbsencesBloc, AbsencesState>(
+        listener: (context, state) {
+          if (state.status == AbsencesStatus.fileExported) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Data file exported successfully!'),
+                duration: Duration(seconds: 2),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        },
+        child: BlocBuilder<AbsencesBloc, AbsencesState>(
+          builder: (context, state) {
+            if (state.status == AbsencesStatus.loading) {
+              return const LoadingWidget();
+            } else if (state.status == AbsencesStatus.failure) {
+              return const Center(child: Text('Failed to load data.'));
+            } else {
+              return Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Total number of absences is ${state.totalAbsencesCount}',
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
-                ),
-                FiltersWidget(),
-                Expanded(
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    itemCount: state.absences.length,
-                    itemBuilder: (context, index) =>
-                        AbsenceCardWidget(absence: state.absences[index]),
+                  FiltersWidget(),
+                  Expanded(
+                    child: state.absences.isNotEmpty
+                        ? ListView.builder(
+                            controller: _scrollController,
+                            itemCount: state.absences.length,
+                            itemBuilder: (context, index) => AbsenceCardWidget(
+                              absence: state.absences[index],
+                            ),
+                          )
+                        : const Center(child: Text('No absences found.')),
                   ),
-                ),
-                if (state.hasReachedMax)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
-              ],
-            ),
-          );
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
+                  if (state.hasReachedMax) const LoadingWidget(),
+                ],
+              );
+            }
+          },
+        ),
+      ),
     );
   }
 }

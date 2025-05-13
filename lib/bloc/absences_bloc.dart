@@ -13,6 +13,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
     on<AbsencesFetched>(_onAbsencesFetched);
     on<AbsencesLoadMore>(_onAbsencesLoadMore);
     on<AbsencesFiltered>(_onAbsencesFiltered);
+    on<AbsencesExportDataFileCreated>(_onExportDataFileCreated);
   }
 
   Future<void> _onAbsencesFetched(
@@ -20,10 +21,15 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
     await _handleAbsencesRequest(
       emit: emit,
       pageNumber: state.correctPageNumber,
+      filterType: state.selectedType,
+      selectedDateRange: state.selectedDateRange,
       onSuccess: (AllAbsences response) {
         emit(state.copyWith(
           status: AbsencesStatus.success,
-          absences: response.absences,
+          absences: paginateAbsences(
+            response.absences,
+            state.correctPageNumber,
+          ),
           totalAbsencesCount: response.totalCount,
         ));
       },
@@ -32,24 +38,27 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
 
   Future<void> _onAbsencesLoadMore(
       AbsencesLoadMore event, Emitter<AbsencesState> emit) async {
-    if (state.status != AbsencesStatus.success) return;
-
     emit(state.copyWith(hasReachedMax: true));
-    final currentAbsences = state.absences;
 
     await _handleAbsencesRequest(
       emit: emit,
       pageNumber: event.pageNumber,
+      filterType: event.filterType ?? state.selectedType,
+      selectedDateRange: event.dateRange ?? state.selectedDateRange,
       onSuccess: (AllAbsences response) {
         final filteredAbsences = applyFilters(
           response.absences,
-          event.filterType ?? 'All',
-          event.dateRange,
+          event.filterType ?? state.selectedType,
+          event.dateRange ?? state.selectedDateRange,
         );
         emit(state.copyWith(
           correctPageNumber: event.pageNumber,
           status: AbsencesStatus.success,
-          absences: currentAbsences + filteredAbsences,
+          absences: filteredAbsences +
+              paginateAbsences(
+                filteredAbsences,
+                event.pageNumber,
+              ),
           totalAbsencesCount: response.totalCount,
           hasReachedMax: false,
           selectedType: event.filterType ?? state.selectedType,
@@ -71,12 +80,20 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
     await _handleAbsencesRequest(
       emit: emit,
       pageNumber: 1,
+      filterType: event.filterType,
+      selectedDateRange: event.dateRange ?? state.selectedDateRange,
       onSuccess: (AllAbsences response) {
-        final filteredAbsences =
-            applyFilters(response.absences, event.filterType, event.dateRange);
+        final filteredAbsences = applyFilters(
+          response.absences,
+          event.filterType,
+          event.dateRange,
+        );
         emit(state.copyWith(
           status: AbsencesStatus.success,
-          absences: filteredAbsences,
+          absences: paginateAbsences(
+            filteredAbsences,
+            1,
+          ),
           totalAbsencesCount: response.totalCount,
           selectedType: event.filterType,
           selectedDateRange: event.dateRange ?? state.selectedDateRange,
@@ -85,9 +102,34 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
     );
   }
 
+  Future<void> _onExportDataFileCreated(
+      AbsencesExportDataFileCreated event, Emitter<AbsencesState> emit) async {
+    emit(state.copyWith(status: AbsencesStatus.loading));
+    try {
+      List<ExportDataRequest> absences = state.absences
+          .map((absence) => ExportDataRequest(
+                memberName: absence.memberName,
+                startDate: absence.startDate,
+                endDate: absence.endDate,
+                absenceType: absence.type,
+                status: absence.status,
+                admitterNote: absence.admitterNote,
+                memberNote: absence.memberNote,
+              ))
+          .toList();
+      await _absencesRepository.createExportDataFile(absences);
+      emit(state.copyWith(status: AbsencesStatus.fileExported));
+    } catch (e) {
+      emit(state.copyWith(
+          status: AbsencesStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
   Future<void> _handleAbsencesRequest({
     required Emitter<AbsencesState> emit,
     required int pageNumber,
+    required String filterType,
+    required DateTimeRange? selectedDateRange,
     required Function(AllAbsences response) onSuccess,
   }) async {
     emit(state.copyWith(status: AbsencesStatus.loading));
@@ -118,4 +160,15 @@ List<Absence> applyFilters(List<Absence> absences, String filterType,
             DateTime.parse(absence.endDate) == selectedDateRange.end);
     return matchType && matchDate;
   }).toList();
+}
+
+List<Absence> paginateAbsences(List<Absence> absences, int pageNumber) {
+  final start = (pageNumber - 1) * 10;
+  final end = (start + 10).clamp(0, absences.length);
+
+  if (start >= absences.length) {
+    return [];
+  }
+
+  return absences.sublist(start, end);
 }

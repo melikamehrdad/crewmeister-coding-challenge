@@ -69,8 +69,11 @@ void main() {
 
   group('AbsencesPage Widget Tests', () {
     testWidgets('AbsencesPage displays AppBar and Filters', (tester) async {
-      when(() => mockAbsencesBloc.state).thenReturn(const AbsencesState(
-          status: AbsencesStatus.success, absences: [], totalAbsencesCount: 0));
+      when(() => mockAbsencesBloc.state).thenReturn(AbsencesState(
+        status: AbsencesStatus.success,
+        absences: mockAbsences,
+        totalAbsencesCount: 0,
+      ));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -124,13 +127,16 @@ void main() {
       }
     });
 
-    testWidgets('Filters apply correctly and reset works', (tester) async {
+    testWidgets('AbsencesPage shows empty state when no absences',
+        (tester) async {
       when(() => mockAbsencesBloc.state).thenReturn(
-        AbsencesState(
-            status: AbsencesStatus.success,
-            absences: mockAbsences,
-            totalAbsencesCount: mockAbsences.length),
+        const AbsencesState(
+          status: AbsencesStatus.success,
+          absences: [],
+          totalAbsencesCount: 0,
+        ),
       );
+
       await tester.pumpWidget(
         MaterialApp(
           home: BlocProvider<AbsencesBloc>(
@@ -140,58 +146,87 @@ void main() {
         ),
       );
 
-      expect(find.text('All'), findsOneWidget);
-      expect(find.text('Date'), findsOneWidget);
+      expect(find.text('No absences found.'), findsOneWidget);
+    });
 
-      await tester.tap(find.text('All'));
+    testWidgets('Filters apply correctly and reset works', (tester) async {
+      when(() => mockAbsencesBloc.state).thenReturn(
+        AbsencesState(
+          status: AbsencesStatus.success,
+          absences: mockAbsences,
+          totalAbsencesCount: mockAbsences.length,
+        ),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<AbsencesBloc>(
+            create: (_) => mockAbsencesBloc,
+            child: const AbsencesPage(),
+          ),
+        ),
+      );
+
+      expect(
+          find.byType(AbsenceCardWidget), findsNWidgets(mockAbsences.length));
+
+      await tester.tap(find.byType(DropdownButton<String>).first);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('vacation'));
+      await tester.tap(find.text('vacation').last);
       await tester.pumpAndSettle();
 
-      expect(find.text('vacation'), findsOneWidget);
+      final filteredAbsences =
+          mockAbsences.where((absence) => absence.type == 'vacation').toList();
+      expect(find.byType(AbsenceCardWidget), findsWidgets);
+      for (var absence in filteredAbsences) {
+        expect(find.text(absence.memberName), findsOneWidget);
+      }
 
       await tester.tap(find.text('Reset'));
       await tester.pumpAndSettle();
 
-      expect(find.text('All'), findsOneWidget);
-      expect(find.text('Date'), findsOneWidget);
+      expect(
+          find.byType(AbsenceCardWidget), findsNWidgets(mockAbsences.length));
+      for (var absence in mockAbsences) {
+        expect(find.text(absence.memberName), findsOneWidget);
+      }
     });
   });
 
   testWidgets('AbsencesPage shows loading indicator when state is loading',
-    (tester) async {
+      (tester) async {
     when(() => mockAbsencesBloc.state).thenReturn(
-    const AbsencesState(status: AbsencesStatus.loading),
+      const AbsencesState(status: AbsencesStatus.loading),
     );
 
     await tester.pumpWidget(
-    MaterialApp(
-      home: BlocProvider<AbsencesBloc>(
-      create: (_) => mockAbsencesBloc,
-      child: const AbsencesPage(),
+      MaterialApp(
+        home: BlocProvider<AbsencesBloc>(
+          create: (_) => mockAbsencesBloc,
+          child: const AbsencesPage(),
+        ),
       ),
-    ),
     );
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
   testWidgets('AbsencesPage shows error message when state is failed',
-    (tester) async {
+      (tester) async {
     when(() => mockAbsencesBloc.state).thenReturn(
-    const AbsencesState(
-      status: AbsencesStatus.failure,
-      errorMessage: 'Failed to load absences',
-    ),
+      const AbsencesState(
+        status: AbsencesStatus.failure,
+        errorMessage: 'Failed to load absences',
+      ),
     );
 
     await tester.pumpWidget(
-    MaterialApp(
-      home: BlocProvider<AbsencesBloc>(
-      create: (_) => mockAbsencesBloc,
-      child: const AbsencesPage(),
+      MaterialApp(
+        home: BlocProvider<AbsencesBloc>(
+          create: (_) => mockAbsencesBloc,
+          child: const AbsencesPage(),
+        ),
       ),
-    ),
     );
 
     expect(find.text('Failed to load data.'), findsOneWidget);

@@ -1,6 +1,6 @@
 part of 'absences_bloc.dart';
 
-enum AbsencesStatus { loading, success, failure }
+enum AbsencesStatus { loading, success, failure, fileExported }
 
 class AbsencesState extends Equatable {
   final int correctPageNumber;
