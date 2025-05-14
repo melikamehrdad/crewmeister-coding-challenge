@@ -13,7 +13,7 @@ class AbsenceCardWidget extends StatelessWidget {
       case AbsenceRequestStatus.rejected:
         return Colors.red.shade200;
       default:
-        return Colors.orange.shade200;
+        return Colors.blue.shade200;
     }
   }
 
@@ -25,7 +25,9 @@ class AbsenceCardWidget extends StatelessWidget {
       backgroundImage: NetworkImage(absence.memberImage),
       radius: 24,
       onBackgroundImageError: (_, __) => const Icon(Icons.error),
-      child: absence.memberImage.isEmpty ? const CircularProgressIndicator() : null,
+      child: absence.memberImage.isEmpty
+          ? const CircularProgressIndicator()
+          : null,
     );
   }
 

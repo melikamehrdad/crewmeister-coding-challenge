@@ -1,4 +1,5 @@
 import 'package:code_challenge/bloc/absences_bloc.dart';
+import 'package:code_challenge/utils.dart/app_colors.dart';
 import 'package:code_challenge/view/widgets/date_range_picker_button.dart';
 import 'package:code_challenge/view/widgets/dropdown_with_border.dart';
 import 'package:code_challenge/view/widgets/text_button_with_border.dart';
@@ -59,7 +60,7 @@ class FiltersWidget extends StatelessWidget {
                     width: 70,
                     child: TextButtonWithBorder(
                       title: 'Reset',
-                      widgetColor: Colors.red,
+                      widgetColor: AppColors.accentColor1,
                       onPressed: () {
                         _filterAbsences(context, 'All', null);
                       },

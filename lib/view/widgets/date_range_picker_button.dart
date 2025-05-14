@@ -1,3 +1,4 @@
+import 'package:code_challenge/utils.dart/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -28,7 +29,9 @@ class DateRangePickerButton extends StatelessWidget {
         },
         icon: Icon(
           Icons.date_range,
-          color: selectedDateRange == null ? Colors.black54 : Colors.green,
+          color: selectedDateRange == null
+              ? AppColors.secondaryColor1
+              : AppColors.accentColor1,
         ),
         label: Text(
           selectedDateRange == null
@@ -37,14 +40,18 @@ class DateRangePickerButton extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            color: selectedDateRange == null ? Colors.black54 : Colors.green,
+            color: selectedDateRange == null
+                ? AppColors.secondaryColor1
+                : AppColors.accentColor1,
           ),
         ),
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
             side: BorderSide(
-              color: selectedDateRange == null ? Colors.black54 : Colors.green,
+              color: selectedDateRange == null
+                  ? AppColors.secondaryColor1
+                  : AppColors.accentColor1,
             ),
           ),
           alignment: Alignment.centerLeft,

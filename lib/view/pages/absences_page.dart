@@ -54,15 +54,10 @@ class _AbsencesPageState extends State<AbsencesPage> {
         titleTextStyle: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
         leading: IconButton(
-          icon: const Icon(
-            Icons.bar_chart,
-            color: Colors.white,
-          ),
+          icon: const Icon(Icons.bar_chart),
           onPressed: () {
             showDialog(
               context: context,
@@ -74,10 +69,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.download,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.download),
             onPressed: () => BlocProvider.of<AbsencesBloc>(context)
                 .add(AbsencesExportDataFileCreated()),
           ),

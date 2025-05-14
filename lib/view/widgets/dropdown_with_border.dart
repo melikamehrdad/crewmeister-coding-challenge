@@ -1,3 +1,4 @@
+import 'package:code_challenge/utils.dart/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class DropdownWithBorder extends StatelessWidget {
@@ -9,7 +10,7 @@ class DropdownWithBorder extends StatelessWidget {
     super.key,
     required this.selectedType,
     required this.onChanged,
-    this.types = const ['All' , 'Vacation', 'Sickness'],
+    this.types = const ['All', 'Vacation', 'Sickness'],
   });
 
   @override
@@ -18,7 +19,9 @@ class DropdownWithBorder extends StatelessWidget {
       height: 50,
       decoration: BoxDecoration(
         border: Border.all(
-          color: selectedType == types.first ? Colors.black54 : Colors.green,
+          color: selectedType == types.first
+              ? AppColors.secondaryColor1
+              : AppColors.accentColor1,
         ),
         borderRadius: BorderRadius.circular(8),
       ),
@@ -28,23 +31,27 @@ class DropdownWithBorder extends StatelessWidget {
         isExpanded: true,
         icon: Icon(
           Icons.arrow_drop_down,
-          color: selectedType != types.first ? Colors.green : Colors.black54,
+          color: selectedType == types.first
+              ? AppColors.secondaryColor1
+              : AppColors.accentColor1,
         ),
         underline: const SizedBox(),
         focusColor: Colors.transparent,
         onChanged: (value) => onChanged(value!),
         items: types
-            .map((type) => DropdownMenuItem(
-                  value: type,
-                  child: Text(
-                    type,
-                    style: TextStyle(
-                      color: selectedType != types.first && type == selectedType
-                          ? Colors.green
-                          : Colors.black54,
-                    ),
+            .map(
+              (type) => DropdownMenuItem(
+                value: type,
+                child: Text(
+                  type,
+                  style: TextStyle(
+                    color: selectedType != types.first && type == selectedType
+                        ? AppColors.accentColor1
+                        : AppColors.secondaryColor1,
                   ),
-                ))
+                ),
+              ),
+            )
             .toList(),
       ),
     );
