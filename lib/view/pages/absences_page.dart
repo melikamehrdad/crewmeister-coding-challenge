@@ -17,7 +17,16 @@ class _AbsencesPageState extends State<AbsencesPage> {
   void initState() {
     super.initState();
     BlocProvider.of<AbsencesBloc>(context).add(AbsencesFetched());
+    _loadMore();
+  }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _loadMore() {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -32,12 +41,6 @@ class _AbsencesPageState extends State<AbsencesPage> {
     });
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   void _scrollToTop() {
     _scrollController.animateTo(
       0,
@@ -49,32 +52,7 @@ class _AbsencesPageState extends State<AbsencesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Absences Manager'),
-        titleTextStyle: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.bar_chart),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return InformationDialog();
-              },
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.download),
-            onPressed: () => BlocProvider.of<AbsencesBloc>(context)
-                .add(AbsencesExportDataFileCreated()),
-          ),
-        ],
-      ),
+      appBar: _buildAppBar(),
       body: BlocListener<AbsencesBloc, AbsencesState>(
         listener: (context, state) {
           if (state.status == AbsencesStatus.fileExported) {
@@ -120,6 +98,35 @@ class _AbsencesPageState extends State<AbsencesPage> {
         onPressed: _scrollToTop,
         child: const Icon(Icons.arrow_upward),
       ),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: const Text('Absences Manager'),
+      titleTextStyle: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      centerTitle: true,
+      leading: IconButton(
+        icon: const Icon(Icons.bar_chart),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return InformationDialog();
+            },
+          );
+        },
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.download),
+          onPressed: () => BlocProvider.of<AbsencesBloc>(context)
+              .add(AbsencesExportDataFileCreated()),
+        ),
+      ],
     );
   }
 }

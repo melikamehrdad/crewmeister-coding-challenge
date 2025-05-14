@@ -1,18 +1,18 @@
 import 'package:code_challenge/domain/entities/responses/absence.dart';
 
 class AllAbsences {
-  final int totalCount;
-  final List<Absence> absences;
+  final int totalAbsenceRequestsCount;
+  final List<Absence> absenceRequests;
 
   AllAbsences({
-    required this.totalCount,
-    required this.absences,
+    required this.totalAbsenceRequestsCount,
+    required this.absenceRequests,
   });
 
   factory AllAbsences.fromEntity(Map<String, dynamic> json) {
     return AllAbsences(
-      totalCount: json['totalCount'] as int,
-      absences: (json['absences'] as List<dynamic>)
+      totalAbsenceRequestsCount: json['totalAbsenceRequestsCount'] as int,
+      absenceRequests: (json['absenceRequests'] as List<dynamic>)
           .map((item) => Absence.fromEntity(item as Map<String, dynamic>))
           .toList(),
     );
@@ -20,8 +20,8 @@ class AllAbsences {
 
   Map<String, dynamic> toEntity() {
     return {
-      'totalCount': totalCount,
-      'absences': absences.map((absence) => absence.toEntity()).toList(),
+      'totalAbsenceRequestsCount': totalAbsenceRequestsCount,
+      'absenceRequests': absenceRequests.map((absence) => absence.toEntity()).toList(),
     };
   }
 }

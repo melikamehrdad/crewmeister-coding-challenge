@@ -6,6 +6,7 @@ This is a Flutter application designed to manage employee absences using Clean A
 ## **Features**
 - **List Absences**: Displays a list of employee absences with the ability to paginate.
 - **Absence Details**: Shows details such as member name, absence type, period, status, member and admitter notes.
+- **Absences data report**: Shows report of absences such as total absences request, today absences, and etc.
 - **Filtering**: Allows filtering absences by type (vacation, sickness) and date range.
 - **Infinite Scroll**: Automatically loads more absences as the user scrolls down.
 - **Reset Filters**: Resets all applied filters to show all absences.
@@ -91,7 +92,7 @@ assets/
 lib/
 ├── bloc/
 │   ├── absences_bloc.dart      # Contains the Bloc for managing absences
-│   └── absences_event.dart     # Events related to absences (fetched, filtered, load more)
+│   ├── absences_event.dart     # Events related to absences (fetched, filtered, load more)
 │   └── absences_state.dart     # States related to absences
 ├── data/
 │   ├── models/                 # Contains models for Absence and Member
@@ -102,9 +103,10 @@ lib/
 │   └── repositories/           # Abstract classes for repositories
 ├── ui/
 │   ├── pages/                  # UI Pages (AbsencesPage)
-│   ├── widgets/                # UI Widgets for Absence Cards, Filters, etc.
+│   └── widgets/                # UI Widgets for Absence Cards, Filters, etc.
 ├── utils/
-│   └── constants.dart          # Any global constants (URLs, colors, etc.)
+│   ├── constants.dart          # Any global constants (URLs, etc.)
+│   └── app_colors.dart         # App color palette
 └── main.dart                   # Entry point of the app
 test/
 ├── bloc_test.dart              # Contains logic tests

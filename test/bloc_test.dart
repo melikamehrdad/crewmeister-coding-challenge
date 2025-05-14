@@ -74,8 +74,8 @@ void main() {
       build: () {
         when(() => mockAbsencesRepository.getAbsences(any()))
             .thenAnswer((_) async => AllAbsences(
-                  absences: [],
-                  totalCount: 0,
+                  absenceRequests: [],
+                  totalAbsenceRequestsCount: 0,
                 ));
         return absencesBloc;
       },
@@ -83,7 +83,12 @@ void main() {
       expect: () => [
         const AbsencesState(status: AbsencesStatus.loading),
         const AbsencesState(
-            status: AbsencesStatus.success, totalAbsencesRequestCount: 0),
+          status: AbsencesStatus.success,
+          absences: [],
+          totalAbsencesRequestCount: 0,
+          todayTotalAbsencesCount: 0,
+          totalAbsencesCount: 0,
+        ),
       ],
       verify: (_) {
         verify(() => mockAbsencesRepository.getAbsences(any())).called(1);
@@ -101,8 +106,9 @@ void main() {
       expect: () => [
         const AbsencesState(status: AbsencesStatus.loading),
         const AbsencesState(
-            status: AbsencesStatus.failure,
-            errorMessage: 'Exception: Failed to load data'),
+          status: AbsencesStatus.failure,
+          errorMessage: 'Exception: Failed to load data',
+        ),
       ],
       verify: (_) {
         verify(() => mockAbsencesRepository.getAbsences(any())).called(1);
@@ -114,8 +120,8 @@ void main() {
       build: () {
         when(() => mockAbsencesRepository.getAbsences(any()))
             .thenAnswer((_) async => AllAbsences(
-                  absences: mockAbsences + mockAbsences,
-                  totalCount: 3,
+                  absenceRequests: mockAbsences + mockAbsences,
+                  totalAbsenceRequestsCount: 6,
                 ));
         return absencesBloc;
       },
@@ -123,6 +129,8 @@ void main() {
         status: AbsencesStatus.success,
         absences: mockAbsences,
         totalAbsencesRequestCount: 3,
+        todayTotalAbsencesCount: 0,
+        totalAbsencesCount: 2,
       ),
       act: (bloc) {
         bloc.add(AbsencesLoadMore(pageNumber: 2));
@@ -132,19 +140,25 @@ void main() {
           status: AbsencesStatus.success,
           absences: mockAbsences,
           totalAbsencesRequestCount: 3,
+          todayTotalAbsencesCount: 0,
+          totalAbsencesCount: 2,
           hasReachedMax: true,
         ),
         AbsencesState(
           status: AbsencesStatus.loading,
           absences: mockAbsences,
           totalAbsencesRequestCount: 3,
+          todayTotalAbsencesCount: 0,
+          totalAbsencesCount: 2,
           hasReachedMax: true,
         ),
         AbsencesState(
           status: AbsencesStatus.success,
           correctPageNumber: 2,
           absences: mockAbsences + mockAbsences,
-          totalAbsencesRequestCount: 3,
+          totalAbsencesRequestCount: 6,
+          todayTotalAbsencesCount: 0,
+          totalAbsencesCount: 4,
         ),
       ],
       verify: (_) {
@@ -157,8 +171,8 @@ void main() {
       build: () {
         when(() => mockAbsencesRepository.getAbsences(any()))
             .thenAnswer((_) async => AllAbsences(
-                  absences: mockAbsences,
-                  totalCount: 3,
+                  absenceRequests: mockAbsences,
+                  totalAbsenceRequestsCount: 3,
                 ));
         return absencesBloc;
       },
@@ -166,6 +180,8 @@ void main() {
         status: AbsencesStatus.success,
         absences: mockAbsences,
         totalAbsencesRequestCount: 3,
+        todayTotalAbsencesCount: 0,
+        totalAbsencesCount: 2,
       ),
       act: (bloc) {
         bloc.add(AbsencesFiltered(
@@ -178,6 +194,8 @@ void main() {
           status: AbsencesStatus.loading,
           absences: mockAbsences,
           totalAbsencesRequestCount: 3,
+          todayTotalAbsencesCount: 0,
+          totalAbsencesCount: 2,
         ),
         AbsencesState(
           status: AbsencesStatus.success,
@@ -187,6 +205,8 @@ void main() {
           ],
           selectedType: 'vacation',
           totalAbsencesRequestCount: 3,
+          todayTotalAbsencesCount: 0,
+          totalAbsencesCount: 2,
         ),
       ],
       verify: (_) {
@@ -227,6 +247,22 @@ void main() {
         verify(() => mockAbsencesRepository.createExportDataFile(any()))
             .called(1);
       },
+    );
+
+    blocTest<AbsencesBloc, AbsencesState>(
+      'emits [failure] when error occurs while creating export data file',
+      build: () {
+        when(() => mockAbsencesRepository.createExportDataFile(any()))
+            .thenThrow(Exception('Failed to create export data file'));
+        return absencesBloc;
+      },
+      act: (bloc) => bloc.add(AbsencesExportDataFileCreated()),
+      expect: () => [
+        const AbsencesState(status: AbsencesStatus.loading),
+        const AbsencesState(
+            status: AbsencesStatus.failure,
+            errorMessage: 'Exception: Failed to create export data file'),
+      ],
     );
   });
 }

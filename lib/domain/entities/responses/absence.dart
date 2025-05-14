@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 enum AbsenceRequestStatus {
   requested,
   confirmed,
@@ -88,12 +86,6 @@ class Absence {
       'memberName': memberName,
       'memberImage': memberImage,
     };
-  }
-
-
-
-  static int getConfirmedRequestsLength(List<Absence> absences) {
-    return absences.where((absence) => absence.status == AbsenceRequestStatus.confirmed).length;
   }
 }
 

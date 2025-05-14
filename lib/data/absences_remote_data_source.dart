@@ -18,8 +18,8 @@ class AbsencesRemoteDataSource {
       _assignMemberInfoToAbsences(absencesList, membersList);
 
       return AllAbsencesModel(
-        totalCount: absencesList.length,
-        absences: absencesList,
+        totalAbsenceRequestCount: absencesList.length,
+        absenceRequests: absencesList,
       );
     } catch (e) {
       throw Exception('Error loading absences: $e');

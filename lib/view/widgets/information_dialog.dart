@@ -50,9 +50,7 @@ class InformationDialog extends StatelessWidget {
       actions: [
         Center(
           child: TextButtonWithBorder(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            onPressed: () => Navigator.of(context).pop(),
             title: 'Close',
             widgetColor: AppColors.accentColor1,
           ),

@@ -27,12 +27,14 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
         emit(state.copyWith(
           status: AbsencesStatus.success,
           absences: paginateAbsences(
-            response.absences,
+            response.absenceRequests,
             state.correctPageNumber,
           ),
-          totalAbsencesCount: _calculateConfirmedAbsencesRequest(response.absences),
-          todayTotalAbsencesCount: _calculateTodayTotalAbsences(response.absences),
-          totalAbsencesRequestCount: response.totalCount,
+          totalAbsencesCount:
+              _calculateConfirmedAbsencesRequest(response.absenceRequests),
+          todayTotalAbsencesCount:
+              _calculateTodayTotalAbsences(response.absenceRequests),
+          totalAbsencesRequestCount: response.totalAbsenceRequestsCount,
         ));
       },
     );
@@ -49,7 +51,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
       selectedDateRange: event.dateRange ?? state.selectedDateRange,
       onSuccess: (AllAbsences response) {
         final filteredAbsences = applyFilters(
-          response.absences,
+          response.absenceRequests,
           event.filterType ?? state.selectedType,
           event.dateRange ?? state.selectedDateRange,
         );
@@ -61,9 +63,10 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
                 filteredAbsences,
                 event.pageNumber,
               ),
-          totalAbsencesRequestCount: response.totalCount,
+          totalAbsencesRequestCount: response.totalAbsenceRequestsCount,
           todayTotalAbsencesCount: state.todayTotalAbsencesCount,
-          totalAbsencesCount: _calculateConfirmedAbsencesRequest(filteredAbsences),
+          totalAbsencesCount:
+              _calculateConfirmedAbsencesRequest(filteredAbsences),
           hasReachedMax: false,
           selectedType: event.filterType ?? state.selectedType,
           selectedDateRange: event.dateRange ?? state.selectedDateRange,
@@ -88,7 +91,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
       selectedDateRange: event.dateRange ?? state.selectedDateRange,
       onSuccess: (AllAbsences response) {
         final filteredAbsences = applyFilters(
-          response.absences,
+          response.absenceRequests,
           event.filterType,
           event.dateRange,
         );
@@ -98,9 +101,11 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
             filteredAbsences,
             1,
           ),
-          totalAbsencesRequestCount: response.totalCount,
-          todayTotalAbsencesCount: _calculateTodayTotalAbsences(response.absences),
-          totalAbsencesCount: _calculateConfirmedAbsencesRequest(filteredAbsences),
+          totalAbsencesRequestCount: response.totalAbsenceRequestsCount,
+          todayTotalAbsencesCount:
+              _calculateTodayTotalAbsences(response.absenceRequests),
+          totalAbsencesCount:
+              _calculateConfirmedAbsencesRequest(filteredAbsences),
           selectedType: event.filterType,
           selectedDateRange: event.dateRange ?? state.selectedDateRange,
         ));
@@ -166,9 +171,7 @@ int _calculateTodayTotalAbsences(List<Absence> absences) {
     final startDate = DateTime.parse(absence.startDate);
     final endDate = DateTime.parse(absence.endDate);
     final isConfirmed = absence.status == AbsenceRequestStatus.confirmed;
-    return startDate.isBefore(today) &&
-        endDate.isAfter(today) &&
-        isConfirmed;
+    return startDate.isBefore(today) && endDate.isAfter(today) && isConfirmed;
   }).length;
 }
 

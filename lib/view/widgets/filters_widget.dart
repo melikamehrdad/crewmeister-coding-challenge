@@ -9,8 +9,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class FiltersWidget extends StatelessWidget {
   const FiltersWidget({super.key});
 
-  void _filterAbsences(BuildContext context, String selectedType,
-      DateTimeRange? selectedDateRange) {
+  void _filterAbsences(
+    BuildContext context,
+    String selectedType,
+    DateTimeRange? selectedDateRange,
+  ) {
     BlocProvider.of<AbsencesBloc>(context).add(AbsencesFiltered(
       filterType: selectedType,
       dateRange: selectedDateRange,

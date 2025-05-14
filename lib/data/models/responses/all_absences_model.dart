@@ -1,18 +1,18 @@
 import 'package:code_challenge/data/models/responses/responses.dart';
 
 class AllAbsencesModel {
-  final int totalCount;
-  final List<AbsenceModel> absences;
+  final int totalAbsenceRequestCount;
+  final List<AbsenceModel> absenceRequests;
 
   AllAbsencesModel({
-    required this.totalCount,
-    required this.absences,
+    required this.totalAbsenceRequestCount,
+    required this.absenceRequests,
   });
 
   factory AllAbsencesModel.fromJson(Map<String, dynamic> json) {
     return AllAbsencesModel(
-      totalCount: json['totalCount'] as int,
-      absences: (json['absences'] as List<dynamic>)
+      totalAbsenceRequestCount: json['totalAbsenceRequestCount'] as int,
+      absenceRequests: (json['absenceRequests'] as List<dynamic>)
           .map((item) => AbsenceModel.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
@@ -20,8 +20,8 @@ class AllAbsencesModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'totalCount': totalCount,
-      'absences': absences.map((absence) => absence.toJson()).toList(),
+      'totalAbsenceRequestCount': totalAbsenceRequestCount,
+      'absenceRequests': absenceRequests.map((absence) => absence.toJson()).toList(),
     };
   }
 }

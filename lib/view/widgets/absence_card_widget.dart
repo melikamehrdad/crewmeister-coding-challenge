@@ -17,6 +17,26 @@ class AbsenceCardWidget extends StatelessWidget {
     }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildMemberInfo(),
+            const SizedBox(height: 8),
+            _buildAbsenceDetails(),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildMemberAvatar() {
     if (absence.memberImage == 'Unknown') {
       return const SizedBox();
@@ -73,26 +93,6 @@ class AbsenceCardWidget extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildMemberInfo(),
-            const SizedBox(height: 8),
-            _buildAbsenceDetails(),
-          ],
-        ),
-      ),
     );
   }
 }

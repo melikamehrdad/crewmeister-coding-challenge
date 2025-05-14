@@ -20,8 +20,8 @@ class AbsencesRepositoryImpl implements AbsencesRepository {
         ),
       );
       return AllAbsences(
-        totalCount: absences.totalCount,
-        absences: absences.absences
+        totalAbsenceRequestsCount: absences.totalAbsenceRequestCount,
+        absenceRequests: absences.absenceRequests
             .map((absence) => Absence.fromEntity(absence.toJson()))
             .toList(),
       );
