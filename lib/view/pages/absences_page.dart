@@ -1,8 +1,5 @@
 import 'package:code_challenge/bloc/absences_bloc.dart';
-import 'package:code_challenge/view/widgets/absence_card_widget.dart';
-import 'package:code_challenge/view/widgets/filters_widget.dart';
-import 'package:code_challenge/view/widgets/loading_widget.dart';
-import 'package:code_challenge/view/widgets/text_button_with_border.dart';
+import 'package:code_challenge/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -41,24 +38,48 @@ class _AbsencesPageState extends State<AbsencesPage> {
     super.dispose();
   }
 
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Absences Manager'),
+        titleTextStyle: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: TextButtonWithBorder(
-              title: 'Export',
-              widgetColor: Colors.white,
-              onPressed: () {
-                BlocProvider.of<AbsencesBloc>(context)
-                    .add(AbsencesExportDataFileCreated());
+        leading: IconButton(
+          icon: const Icon(
+            Icons.bar_chart,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return InformationDialog();
               },
+            );
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.download,
+              color: Colors.white,
             ),
+            onPressed: () => BlocProvider.of<AbsencesBloc>(context)
+                .add(AbsencesExportDataFileCreated()),
           ),
         ],
       ),
@@ -83,18 +104,6 @@ class _AbsencesPageState extends State<AbsencesPage> {
             } else {
               return Column(
                 children: [
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Total number of absences is ${state.totalAbsencesCount}',
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
                   FiltersWidget(),
                   Expanded(
                     child: state.absences.isNotEmpty
@@ -113,6 +122,11 @@ class _AbsencesPageState extends State<AbsencesPage> {
             }
           },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white70,
+        onPressed: _scrollToTop,
+        child: const Icon(Icons.arrow_upward),
       ),
     );
   }

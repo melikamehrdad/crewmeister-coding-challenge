@@ -1,3 +1,11 @@
+import 'package:intl/intl.dart';
+
+enum AbsenceRequestStatus {
+  requested,
+  confirmed,
+  rejected,
+}
+
 class Absence {
   final int? admitterId;
   final String admitterNote;
@@ -11,7 +19,7 @@ class Absence {
   final String startDate;
   final String type;
   final int userId;
-  final String status;
+  final AbsenceRequestStatus status;
   final String memberName;
   final String memberImage;
 
@@ -34,13 +42,13 @@ class Absence {
   });
 
   factory Absence.fromEntity(Map<String, dynamic> json) {
-    String status;
+    AbsenceRequestStatus status;
     if (json['confirmedAt'] != null) {
-      status = 'Confirmed';
+      status = AbsenceRequestStatus.confirmed;
     } else if (json['rejectedAt'] != null) {
-      status = 'Rejected';
+      status = AbsenceRequestStatus.rejected;
     } else {
-      status = 'Requested';
+      status = AbsenceRequestStatus.requested;
     }
 
     return Absence(
@@ -76,9 +84,16 @@ class Absence {
       'startDate': startDate,
       'type': type,
       'userId': userId,
-      'status': status,
+      'status': status.name,
       'memberName': memberName,
       'memberImage': memberImage,
     };
   }
+
+
+
+  static int getConfirmedRequestsLength(List<Absence> absences) {
+    return absences.where((absence) => absence.status == AbsenceRequestStatus.confirmed).length;
+  }
 }
+

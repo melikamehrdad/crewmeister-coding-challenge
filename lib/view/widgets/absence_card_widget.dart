@@ -6,11 +6,11 @@ class AbsenceCardWidget extends StatelessWidget {
 
   const AbsenceCardWidget({super.key, required this.absence});
 
-  Color _getStatusColor(String status) {
+  Color _getStatusColor(AbsenceRequestStatus status) {
     switch (status) {
-      case 'Confirmed':
+      case AbsenceRequestStatus.confirmed:
         return Colors.green.shade200;
-      case 'Rejected':
+      case AbsenceRequestStatus.rejected:
         return Colors.red.shade200;
       default:
         return Colors.orange.shade200;
@@ -40,7 +40,7 @@ class AbsenceCardWidget extends StatelessWidget {
         ),
         const Spacer(),
         Chip(
-          label: Text(absence.status),
+          label: Text(absence.status.name),
           backgroundColor: _getStatusColor(absence.status),
         ),
       ],

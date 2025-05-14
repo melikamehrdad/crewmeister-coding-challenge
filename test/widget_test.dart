@@ -22,7 +22,7 @@ void main() {
       endDate: '2024-05-05',
       memberNote: 'Enjoying the vacation',
       admitterNote: 'Approved',
-      status: 'Confirmed',
+      status: AbsenceRequestStatus.confirmed,
       createdAt: '2024-05-01',
       crewId: 1,
       id: 1,
@@ -36,7 +36,7 @@ void main() {
       endDate: '2024-05-08',
       memberNote: 'Feeling unwell',
       admitterNote: 'Pending approval',
-      status: 'Requested',
+      status: AbsenceRequestStatus.requested,
       createdAt: '2024-05-06',
       crewId: 2,
       id: 2,
@@ -50,7 +50,7 @@ void main() {
       endDate: '2024-05-12',
       memberNote: 'Family trip',
       admitterNote: 'Approved',
-      status: 'Confirmed',
+      status: AbsenceRequestStatus.confirmed,
       createdAt: '2024-05-10',
       crewId: 3,
       id: 3,
@@ -72,7 +72,7 @@ void main() {
       when(() => mockAbsencesBloc.state).thenReturn(AbsencesState(
         status: AbsencesStatus.success,
         absences: mockAbsences,
-        totalAbsencesCount: 0,
+        totalAbsencesRequestCount: 0,
       ));
 
       await tester.pumpWidget(
@@ -97,7 +97,7 @@ void main() {
         AbsencesState(
             status: AbsencesStatus.success,
             absences: mockAbsences,
-            totalAbsencesCount: mockAbsences.length),
+            totalAbsencesRequestCount: mockAbsences.length),
       );
 
       await tester.pumpWidget(
@@ -133,7 +133,7 @@ void main() {
         const AbsencesState(
           status: AbsencesStatus.success,
           absences: [],
-          totalAbsencesCount: 0,
+          totalAbsencesRequestCount: 0,
         ),
       );
 
@@ -154,7 +154,7 @@ void main() {
         AbsencesState(
           status: AbsencesStatus.success,
           absences: mockAbsences,
-          totalAbsencesCount: mockAbsences.length,
+          totalAbsencesRequestCount: mockAbsences.length,
         ),
       );
 

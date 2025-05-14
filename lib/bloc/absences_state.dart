@@ -5,22 +5,26 @@ enum AbsencesStatus { loading, success, failure, fileExported }
 class AbsencesState extends Equatable {
   final int correctPageNumber;
   final AbsencesStatus status;
-  final int totalAbsencesCount;
+  final int totalAbsencesRequestCount;
   final List<Absence> absences;
   final bool hasReachedMax;
   final String errorMessage;
   final String selectedType;
   final DateTimeRange? selectedDateRange;
+  final int todayTotalAbsencesCount;
+  final int totalAbsencesCount;
 
   const AbsencesState({
     this.correctPageNumber = 1,
     this.status = AbsencesStatus.loading,
-    this.totalAbsencesCount = 0,
+    this.totalAbsencesRequestCount = 0,
     this.absences = const [],
     this.hasReachedMax = false,
     this.errorMessage = '',
     this.selectedType = 'All',
     this.selectedDateRange,
+    this.todayTotalAbsencesCount = 0,
+    this.totalAbsencesCount = 0,
   });
 
   AbsencesState copyWith({
@@ -32,16 +36,22 @@ class AbsencesState extends Equatable {
     String? errorMessage,
     String? selectedType,
     DateTimeRange? selectedDateRange,
+    int? todayTotalAbsencesCount,
+    int? totalAbsencesRequestCount,
   }) {
     return AbsencesState(
       correctPageNumber: correctPageNumber ?? this.correctPageNumber,
       status: status ?? this.status,
-      totalAbsencesCount: totalAbsencesCount ?? this.totalAbsencesCount,
+      totalAbsencesRequestCount:
+          totalAbsencesRequestCount ?? this.totalAbsencesRequestCount,
       absences: absences ?? this.absences,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       errorMessage: errorMessage ?? this.errorMessage,
       selectedType: selectedType ?? this.selectedType,
       selectedDateRange: selectedDateRange,
+      todayTotalAbsencesCount:
+          todayTotalAbsencesCount ?? this.todayTotalAbsencesCount,
+      totalAbsencesCount: totalAbsencesCount ?? this.totalAbsencesCount,
     );
   }
 
@@ -50,10 +60,12 @@ class AbsencesState extends Equatable {
         correctPageNumber,
         status,
         absences,
-        totalAbsencesCount,
+        totalAbsencesRequestCount,
         hasReachedMax,
         errorMessage,
         selectedType,
         selectedDateRange,
+        todayTotalAbsencesCount,
+        totalAbsencesCount,
       ];
 }

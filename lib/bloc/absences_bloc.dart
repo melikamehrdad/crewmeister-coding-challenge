@@ -30,7 +30,9 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
             response.absences,
             state.correctPageNumber,
           ),
-          totalAbsencesCount: response.totalCount,
+          totalAbsencesCount: _calculateConfirmedAbsencesRequest(response.absences),
+          todayTotalAbsencesCount: _calculateTodayTotalAbsences(response.absences),
+          totalAbsencesRequestCount: response.totalCount,
         ));
       },
     );
@@ -59,7 +61,9 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
                 filteredAbsences,
                 event.pageNumber,
               ),
-          totalAbsencesCount: response.totalCount,
+          totalAbsencesRequestCount: response.totalCount,
+          todayTotalAbsencesCount: state.todayTotalAbsencesCount,
+          totalAbsencesCount: _calculateConfirmedAbsencesRequest(filteredAbsences),
           hasReachedMax: false,
           selectedType: event.filterType ?? state.selectedType,
           selectedDateRange: event.dateRange ?? state.selectedDateRange,
@@ -94,7 +98,9 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
             filteredAbsences,
             1,
           ),
-          totalAbsencesCount: response.totalCount,
+          totalAbsencesRequestCount: response.totalCount,
+          todayTotalAbsencesCount: _calculateTodayTotalAbsences(response.absences),
+          totalAbsencesCount: _calculateConfirmedAbsencesRequest(filteredAbsences),
           selectedType: event.filterType,
           selectedDateRange: event.dateRange ?? state.selectedDateRange,
         ));
@@ -112,7 +118,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
                 startDate: absence.startDate,
                 endDate: absence.endDate,
                 absenceType: absence.type,
-                status: absence.status,
+                status: absence.status.name,
                 admitterNote: absence.admitterNote,
                 memberNote: absence.memberNote,
               ))
@@ -146,6 +152,24 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
           status: AbsencesStatus.failure, errorMessage: e.toString()));
     }
   }
+}
+
+int _calculateConfirmedAbsencesRequest(List<Absence> absences) {
+  return absences
+      .where((absence) => absence.status == AbsenceRequestStatus.confirmed)
+      .length;
+}
+
+int _calculateTodayTotalAbsences(List<Absence> absences) {
+  final today = DateTime.now();
+  return absences.where((absence) {
+    final startDate = DateTime.parse(absence.startDate);
+    final endDate = DateTime.parse(absence.endDate);
+    final isConfirmed = absence.status == AbsenceRequestStatus.confirmed;
+    return startDate.isBefore(today) &&
+        endDate.isAfter(today) &&
+        isConfirmed;
+  }).length;
 }
 
 List<Absence> applyFilters(List<Absence> absences, String filterType,
