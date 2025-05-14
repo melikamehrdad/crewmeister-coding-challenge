@@ -1,68 +1,19 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:code_challenge/bloc/absences_bloc.dart';
-import 'package:code_challenge/domain/domain.dart';
-import 'package:code_challenge/view/view.dart';
-import 'package:code_challenge/view/widgets/absence_card_widget.dart';
+import 'package:code_challenge/presentation/bloc/absences_bloc.dart';
+import 'package:code_challenge/presentation/view.dart';
+import 'package:code_challenge/presentation/widgets/absence_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import 'mock_test_data.dart';
 
 class MockAbsencesBloc extends MockBloc<AbsencesEvent, AbsencesState>
     implements AbsencesBloc {}
 
 void main() {
   late MockAbsencesBloc mockAbsencesBloc;
-
-  List<Absence> mockAbsences = [
-    Absence(
-      userId: 1,
-      type: 'vacation',
-      startDate: '2024-05-01',
-      endDate: '2024-05-05',
-      memberNote: 'Enjoying the vacation',
-      admitterNote: 'Approved',
-      status: AbsenceRequestStatus.confirmed,
-      createdAt: '2024-05-01',
-      crewId: 1,
-      id: 1,
-      memberName: 'John Doe',
-      memberImage: 'http://example.com/image1.jpg',
-    ),
-    Absence(
-      userId: 2,
-      type: 'sickness',
-      startDate: '2024-05-06',
-      endDate: '2024-05-08',
-      memberNote: 'Feeling unwell',
-      admitterNote: 'Pending approval',
-      status: AbsenceRequestStatus.requested,
-      createdAt: '2024-05-06',
-      crewId: 2,
-      id: 2,
-      memberName: 'Jane Smith',
-      memberImage: 'http://example.com/image2.jpg',
-    ),
-    Absence(
-      userId: 3,
-      type: 'vacation',
-      startDate: '2024-05-10',
-      endDate: '2024-05-12',
-      memberNote: 'Family trip',
-      admitterNote: 'Approved',
-      status: AbsenceRequestStatus.confirmed,
-      createdAt: '2024-05-10',
-      crewId: 3,
-      id: 3,
-      memberName: 'Alice Johnson',
-      memberImage: 'http://example.com/image3.jpg',
-    ),
-  ];
-
-  setUpAll(() {
-    registerFallbackValue(AbsencesRequest(pageNumber: 1, pageSize: 10));
-  });
-
   setUp(() {
     mockAbsencesBloc = MockAbsencesBloc();
   });

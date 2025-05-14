@@ -64,6 +64,7 @@ class AbsenceCardWidget extends StatelessWidget {
         Chip(
           label: Text(absence.status.name),
           backgroundColor: _getStatusColor(absence.status),
+          side: BorderSide(color: Colors.transparent),
         ),
       ],
     );

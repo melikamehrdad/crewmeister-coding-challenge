@@ -1,5 +1,5 @@
-import 'package:code_challenge/bloc/absences_bloc.dart';
-import 'package:code_challenge/view/widgets/widgets.dart';
+import 'package:code_challenge/presentation/bloc/absences_bloc.dart';
+import 'package:code_challenge/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

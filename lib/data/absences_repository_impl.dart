@@ -11,14 +11,9 @@ class AbsencesRepositoryImpl implements AbsencesRepository {
       {required this.localDataSource, required this.remoteDataSource});
 
   @override
-  Future<AllAbsences> getAbsences(AbsencesRequest absencesRequest) async {
+  Future<AllAbsences> getAbsences() async {
     try {
-      final absences = await remoteDataSource.getAbsences(
-        AbsencesRequestModel(
-          pageNumber: absencesRequest.pageNumber,
-          pageSize: absencesRequest.pageSize,
-        ),
-      );
+      final absences = await remoteDataSource.getAbsences();
       return AllAbsences(
         totalAbsenceRequestsCount: absences.totalAbsenceRequestCount,
         absenceRequests: absences.absenceRequests

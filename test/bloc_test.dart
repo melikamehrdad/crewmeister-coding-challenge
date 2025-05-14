@@ -1,63 +1,16 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:code_challenge/bloc/absences_bloc.dart';
+import 'package:code_challenge/presentation/bloc/absences_bloc.dart';
 import 'package:code_challenge/domain/domain.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import 'mock_test_data.dart';
 
 class MockAbsencesRepository extends Mock implements AbsencesRepository {}
 
 void main() {
   late AbsencesBloc absencesBloc;
   late MockAbsencesRepository mockAbsencesRepository;
-
-  List<Absence> mockAbsences = [
-    Absence(
-      userId: 1,
-      type: 'vacation',
-      startDate: '2024-05-01',
-      endDate: '2024-05-05',
-      memberNote: 'Enjoying the vacation',
-      admitterNote: 'Approved',
-      status: AbsenceRequestStatus.confirmed,
-      createdAt: '2024-05-01',
-      crewId: 1,
-      id: 1,
-      memberName: 'John Doe',
-      memberImage: 'http://example.com/image1.jpg',
-    ),
-    Absence(
-      userId: 2,
-      type: 'sickness',
-      startDate: '2024-05-06',
-      endDate: '2024-05-08',
-      memberNote: 'Feeling unwell',
-      admitterNote: 'Pending approval',
-      status: AbsenceRequestStatus.requested,
-      createdAt: '2024-05-06',
-      crewId: 2,
-      id: 2,
-      memberName: 'Jane Smith',
-      memberImage: 'http://example.com/image2.jpg',
-    ),
-    Absence(
-      userId: 3,
-      type: 'vacation',
-      startDate: '2024-05-10',
-      endDate: '2024-05-12',
-      memberNote: 'Family trip',
-      admitterNote: 'Approved',
-      status: AbsenceRequestStatus.confirmed,
-      createdAt: '2024-05-10',
-      crewId: 3,
-      id: 3,
-      memberName: 'Alice Johnson',
-      memberImage: 'http://example.com/image3.jpg',
-    ),
-  ];
-
-  setUpAll(() {
-    registerFallbackValue(AbsencesRequest(pageNumber: 1, pageSize: 10));
-  });
 
   setUp(() {
     mockAbsencesRepository = MockAbsencesRepository();
@@ -72,7 +25,7 @@ void main() {
     blocTest<AbsencesBloc, AbsencesState>(
       'emits [loading, success] when data is fetched successfully',
       build: () {
-        when(() => mockAbsencesRepository.getAbsences(any()))
+        when(() => mockAbsencesRepository.getAbsences())
             .thenAnswer((_) async => AllAbsences(
                   absenceRequests: [],
                   totalAbsenceRequestsCount: 0,
@@ -91,14 +44,14 @@ void main() {
         ),
       ],
       verify: (_) {
-        verify(() => mockAbsencesRepository.getAbsences(any())).called(1);
+        verify(() => mockAbsencesRepository.getAbsences()).called(1);
       },
     );
 
     blocTest<AbsencesBloc, AbsencesState>(
       'emits [loading, failure] when an error occurs during fetch',
       build: () {
-        when(() => mockAbsencesRepository.getAbsences(any()))
+        when(() => mockAbsencesRepository.getAbsences())
             .thenThrow(Exception('Failed to load data'));
         return absencesBloc;
       },
@@ -111,14 +64,14 @@ void main() {
         ),
       ],
       verify: (_) {
-        verify(() => mockAbsencesRepository.getAbsences(any())).called(1);
+        verify(() => mockAbsencesRepository.getAbsences()).called(1);
       },
     );
 
     blocTest<AbsencesBloc, AbsencesState>(
       'emits [loading, success] when more data is loaded successfully',
       build: () {
-        when(() => mockAbsencesRepository.getAbsences(any()))
+        when(() => mockAbsencesRepository.getAbsences())
             .thenAnswer((_) async => AllAbsences(
                   absenceRequests: mockAbsences + mockAbsences,
                   totalAbsenceRequestsCount: 6,
@@ -162,14 +115,14 @@ void main() {
         ),
       ],
       verify: (_) {
-        verify(() => mockAbsencesRepository.getAbsences(any())).called(1);
+        verify(() => mockAbsencesRepository.getAbsences()).called(1);
       },
     );
 
     blocTest<AbsencesBloc, AbsencesState>(
       'emits [loading, success] when filters are applied successfully',
       build: () {
-        when(() => mockAbsencesRepository.getAbsences(any()))
+        when(() => mockAbsencesRepository.getAbsences())
             .thenAnswer((_) async => AllAbsences(
                   absenceRequests: mockAbsences,
                   totalAbsenceRequestsCount: 3,
@@ -210,14 +163,14 @@ void main() {
         ),
       ],
       verify: (_) {
-        verify(() => mockAbsencesRepository.getAbsences(any())).called(1);
+        verify(() => mockAbsencesRepository.getAbsences()).called(1);
       },
     );
 
     blocTest<AbsencesBloc, AbsencesState>(
       'emits [failure] when error occurs while filtering',
       build: () {
-        when(() => mockAbsencesRepository.getAbsences(any()))
+        when(() => mockAbsencesRepository.getAbsences())
             .thenThrow(Exception('Error applying filters.'));
         return absencesBloc;
       },

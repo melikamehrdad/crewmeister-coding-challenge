@@ -50,7 +50,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
       filterType: event.filterType ?? state.selectedType,
       selectedDateRange: event.dateRange ?? state.selectedDateRange,
       onSuccess: (AllAbsences response) {
-        final filteredAbsences = applyFilters(
+        final filteredAbsences = _applyFilters(
           response.absenceRequests,
           event.filterType ?? state.selectedType,
           event.dateRange ?? state.selectedDateRange,
@@ -90,7 +90,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
       filterType: event.filterType,
       selectedDateRange: event.dateRange ?? state.selectedDateRange,
       onSuccess: (AllAbsences response) {
-        final filteredAbsences = applyFilters(
+        final filteredAbsences = _applyFilters(
           response.absenceRequests,
           event.filterType,
           event.dateRange,
@@ -145,12 +145,7 @@ class AbsencesBloc extends Bloc<AbsencesEvent, AbsencesState> {
   }) async {
     emit(state.copyWith(status: AbsencesStatus.loading));
     try {
-      final response = await _absencesRepository.getAbsences(
-        AbsencesRequest(
-          pageNumber: pageNumber,
-          pageSize: 10,
-        ),
-      );
+      final response = await _absencesRepository.getAbsences();
       onSuccess(response);
     } catch (e) {
       emit(state.copyWith(
@@ -175,7 +170,7 @@ int _calculateTodayTotalAbsences(List<Absence> absences) {
   }).length;
 }
 
-List<Absence> applyFilters(List<Absence> absences, String filterType,
+List<Absence> _applyFilters(List<Absence> absences, String filterType,
     DateTimeRange? selectedDateRange) {
   return absences.where((absence) {
     final matchType = filterType == 'All' || absence.type == filterType;

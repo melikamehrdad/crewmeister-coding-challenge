@@ -1,4 +1,4 @@
-import 'package:code_challenge/utils.dart/app_colors.dart';
+import 'package:code_challenge/presentation/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class DropdownWithBorder extends StatelessWidget {

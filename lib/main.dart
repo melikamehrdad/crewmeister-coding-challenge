@@ -1,9 +1,9 @@
-import 'package:code_challenge/bloc/absences_bloc.dart';
+import 'package:code_challenge/presentation/bloc/absences_bloc.dart';
 import 'package:code_challenge/data/absences_local_data_source.dart';
 import 'package:code_challenge/data/absences_remote_data_source.dart';
 import 'package:code_challenge/data/absences_repository_impl.dart';
-import 'package:code_challenge/utils.dart/app_colors.dart';
-import 'package:code_challenge/view/view.dart';
+import 'package:code_challenge/presentation/utils/app_colors.dart';
+import 'package:code_challenge/presentation/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
