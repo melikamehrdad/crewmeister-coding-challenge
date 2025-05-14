@@ -15,7 +15,7 @@ This is a Flutter application designed to manage employee absences using Clean A
 This project follows the **Clean Architecture** principles, ensuring a separation of concerns and making it easier to scale and maintain the project.
 
 ### **Key Layers:**
-1. **Presentation Layer**:
+1. **Presentation(view) Layer**:
    - **Pages**: The UI pages that display the list of absence.
    - **Widgets**: The UI components that display the absence data, apply filters, and show absence details.
   
@@ -146,8 +146,8 @@ If you would like to contribute to this project, please follow these steps:
 ## **Demo Videos**
 You can find the demo videos of the app for both Android, iOS and web below:
 
-[android.webm](https://github.com/user-attachments/assets/db091c35-7151-41e9-8044-63395c368431)
+[android.webm](https://github.com/user-attachments/assets/9d4aba21-a0b5-4e56-9e46-de3b4b41d1a2)
 
-https://github.com/user-attachments/assets/b6d4a927-f1b6-45dc-9118-4de38d91c790
+https://github.com/user-attachments/assets/b350762b-615f-47c4-9253-f7c03cbbcf36
 
-https://github.com/user-attachments/assets/65cc09d2-f588-47f2-819b-b1d3ed8d1181
+https://github.com/user-attachments/assets/0928a0e3-23c5-4f11-8674-b45995615157
