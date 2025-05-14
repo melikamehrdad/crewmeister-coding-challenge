@@ -146,7 +146,7 @@ If you would like to contribute to this project, please follow these steps:
 ## **Demo Videos**
 You can find the demo videos of the app for both Android, iOS and web below:
 
-[android.webm](https://github.com/user-attachments/assets/9d4aba21-a0b5-4e56-9e46-de3b4b41d1a2)
+https://github.com/user-attachments/assets/3f699a0e-3f1b-4cca-8c2b-6504a34bb16e
 
 https://github.com/user-attachments/assets/b350762b-615f-47c4-9253-f7c03cbbcf36
 
